@@ -1,0 +1,4 @@
+__ctr_start=0x100000 // size:0x24 scope:global
+nninitRegion=0x100024 // size:0x0 scope:global
+nn::svc::ExitProcess=0x103cf0 // size:0x8 scope:global
+nnMain=0x103cf8 // size:0x218c scope:global

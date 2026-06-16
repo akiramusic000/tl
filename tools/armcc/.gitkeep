@@ -1,0 +1,7 @@
+You will need to provide your own armcc files.
+Provide the following files in this directory:
+
+- armcc.exe
+- armasm.exe
+
+This should be armcc 4.1 [Build 791].

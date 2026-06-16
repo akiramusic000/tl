@@ -1,0 +1,17 @@
+.venv*/
+__pycache__/
+
+tools/armcc/*
+!tools/armcc/.gitkeep
+tools/binutils/
+tools/wibo
+
+split/
+orig/
+build/
+
+.ninja_deps
+.ninja_log
+build.ninja
+.cache/
+compile_commands.json

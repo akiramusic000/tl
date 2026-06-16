@@ -1,0 +1,31 @@
+{
+  "build_target": false,
+  "watch_patterns": [
+    "*.c",
+    "*.cc",
+    "*.cp",
+    "*.cpp",
+    "*.cxx",
+    "*.c++",
+    "*.h",
+    "*.hh",
+    "*.hp",
+    "*.hpp",
+    "*.hxx",
+    "*.h++",
+    "*.pch",
+    "*.pch++",
+    "*.inc",
+    "*.py",
+    "*.yml",
+    "*.txt",
+    "*.json"
+  ],
+  "units": [
+    {
+      "name": "src/main",
+      "target_path": "split/main.o",
+      "base_path": "build/main.o"
+    }
+  ]
+}

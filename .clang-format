@@ -1,0 +1,17 @@
+﻿---
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: Cpp03
+
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Empty
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+FixNamespaceComments: true
+IncludeBlocks: Regroup
+IndentWidth: 4
+InsertNewlineAtEOF: true
+PointerAlignment: Left
+ShortNamespaceLines: 0
+SortIncludes: "true"
+SortUsingDeclarations: "true"
+UseTab: Never
