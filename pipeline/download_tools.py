@@ -57,8 +57,8 @@ def download_tools():
 
     if not (tool_dir / 'binutils').exists():
         download_binutils(tool_dir)
-    if not (tool_dir / 'armcc').exists():
-        download_armcc(tool_dir)
+    #if not (tool_dir / 'armcc').exists():
+        #download_armcc(tool_dir)
 
     uname = platform.uname()
     system = uname.system.lower()
