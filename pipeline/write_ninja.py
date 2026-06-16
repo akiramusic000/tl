@@ -36,6 +36,7 @@ def write_ninja(libs: Libs):
     commands = []
     objdiff = {
         "build_target": False,
+        "custom_make": "ninja",
         "watch_patterns": [
             "*.c",
             "*.cc",
