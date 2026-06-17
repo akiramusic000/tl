@@ -59,7 +59,7 @@ def format_symbols(symbol_file: Path) -> dict[int, Symbol]:
                 scope = "local"
             case STB.STB_WEAK:
                 scope = "weak"
-        lines.append(f'{elf_symbol.name}={symbol.section}:{hex(addr)}; // size:{hex(elf_symbol.st_size)} scope:{scope} mapping:{symbol.mapping}')
+        lines.append(f'{elf_symbol.name}={symbol.section}:{hex(addr)}; // size:{hex(elf_symbol.st_size)} scope:{scope} type:{symbol.mapping}')
     formatted = '\n'.join(lines)
 
     if orig != formatted:

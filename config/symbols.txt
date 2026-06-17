@@ -1,4 +1,4 @@
-__ctr_start=.text:0x100000; // size:0x24 scope:global mapping:$a
-nninitRegion=.text:0x100024; // size:0x0 scope:global mapping:$a
-nn::svc::ExitProcess=.text:0x103cf0; // size:0x8 scope:global mapping:$a
-nnMain=.text:0x103cf8; // size:0x218c scope:global mapping:$a
+__ctr_start=.text:0x100000; // size:0x24 scope:global type:$a
+nninitRegion=.text:0x100024; // size:0x0 scope:global type:$a
+nn::svc::ExitProcess=.text:0x103cf0; // size:0x8 scope:global type:$a
+nnMain=.text:0x103cf8; // size:0x218c scope:global type:$a
