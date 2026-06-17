@@ -26,7 +26,8 @@ def parse_splits(splits_path: Path) -> dict[str, Split]:
         symbols = addrs.strip().strip("[]").split(",")
         symbols_clean = []
         for i in symbols:
-            symbols_clean.append(int(i.strip(), 16))
+            if i:
+                symbols_clean.append(int(i.strip(), 16))
         
         splits[file] = Split(file, symbols_clean)
 
