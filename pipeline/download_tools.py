@@ -1,3 +1,6 @@
+# Module for downloading tools required for decomp.
+# Written by Chloe with some functions taken from https://github.com/AlgebraManiacABC/3DS-Decomp-Pipeline.
+
 import platform
 from urllib.request import urlretrieve
 import zipfile

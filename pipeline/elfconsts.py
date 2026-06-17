@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
 # ELF constants
+# Taken from https://github.com/NSMBW-Community/NSMBW-Decomp.
 
 import re
 from enum import IntEnum, IntFlag

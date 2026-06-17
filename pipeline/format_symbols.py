@@ -1,3 +1,6 @@
+# Script to format symbols.txt.
+# Written by Chloe (with edits from RootCubed), taken from https://github.com/RootCubed/mwcceppc-decomp.
+
 from pathlib import Path
 from pipeline.elf import ElfSymbol
 from pipeline.elfconsts import STB

@@ -1,3 +1,6 @@
+# Code for writing build.ninja file.
+# Written by Chloe.
+
 from pipeline.ninja_syntax_ex import Writer
 from pathlib import Path
 from dataclasses import dataclass

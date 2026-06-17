@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 from pipeline.download_tools import download_tools
-from pipeline.split_code import split_code
 from pipeline.write_ninja import write_ninja, Lib
 from pathlib import Path
+from pipeline.format_symbols import format_symbols
+from pipeline.parse_splits import parse_splits
+from pipeline.split import split
 
 def Source(matching: bool, name: str) -> tuple[bool, Path]:
     return (matching, Path(name))
@@ -25,5 +27,12 @@ libs = [
 ]
 
 download_tools()
-split_code()
+exheader = Path("orig/exheader")
+code = Path("orig/code.bin")
+
+symbols = format_symbols(Path("config/symbols.txt"))
+splits = parse_splits(Path("config/splits.txt"))
+
+for s in splits.values():
+    split(code, exheader, s, symbols)
 write_ninja(libs)

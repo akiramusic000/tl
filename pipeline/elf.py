@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
 # ELF definitions
+# Taken from https://github.com/NSMBW-Community/NSMBW-Decomp.
 
 import struct
 from typing import Optional

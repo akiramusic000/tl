@@ -1,3 +1,6 @@
+# Module for parsing splits.txt files.
+# Written by Chloe.
+
 from pathlib import Path
 
 from dataclasses import dataclass

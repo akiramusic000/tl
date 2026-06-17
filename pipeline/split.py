@@ -1,3 +1,6 @@
+# Module for splitting code.bin.
+# Written (roughly and messily) by Chloe.
+
 from pathlib import Path
 from pipeline.parse_splits import Split
 from pipeline.elf import ElfSection, ElfFile, ElfSymbol, ElfSymtab, ElfRela, ElfRelaSec
@@ -6,8 +9,6 @@ import capstone
 import os
 
 def split(code_bin: Path, exheader: Path, split: Split, symbols: dict[int, tuple[ElfSymbol, str]]):
-    symbol_addrs = list(symbols.keys())
-
     code_bin_file = code_bin.open("rb")
     exheader_file = exheader.open("rb")
     exheader_file.seek(0x10, os.SEEK_SET)

@@ -1,3 +1,6 @@
+# Written by Chloe
+# Light wrapper for running armcc, to make ninja script smaller.
+
 import sys
 from pathlib import Path
 import os

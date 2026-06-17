@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
-
 # ninja_syntax_ex.py
 # ninja_syntax extension for extra flexibility.
+# Taken from https://github.com/NSMBW-Community/NSMBW-Decomp.
 
 from collections.abc import Iterable
 from io import StringIO
