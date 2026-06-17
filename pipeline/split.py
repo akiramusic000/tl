@@ -83,9 +83,6 @@ def split(code_bin: Path, exheader: Path, split: Split, symbols: dict[int, Symbo
                 
                 if insn.group(capstone.arm.ARM_GRP_JUMP) and not (insn.mnemonic == "bl" or insn.mnemonic == "blx"):
                     operand = insn.operands[0]
-                    if operand.reg == capstone.arm.ARM_REG_LR:
-                        add_mapping(insn.address - start + 4, "$d")
-                    
                     if insn.cc in [capstone.arm.ARM_CC_AL, capstone.arm.ARM_CC_INVALID]:
                         add_mapping(insn.address - start + 4, "$d")
                     
