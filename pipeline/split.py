@@ -2,13 +2,14 @@
 # Written (roughly and messily) by Chloe.
 
 from pathlib import Path
+from pipeline.format_symbols import Symbol
 from pipeline.parse_splits import Split
 from pipeline.elf import ElfSection, ElfFile, ElfSymbol, ElfSymtab, ElfRela, ElfRelaSec
-from pipeline.elfconsts import ET, EM, ARM_RELOC_TYPE
+from pipeline.elfconsts import ET, EM, ARM_RELOC_TYPE, SpecialSections
 import capstone
 import os
 
-def split(code_bin: Path, exheader: Path, split: Split, symbols: dict[int, tuple[ElfSymbol, str]]):
+def split(code_bin: Path, exheader: Path, split: Split, symbols: dict[int, Symbol]):
     code_bin_file = code_bin.open("rb")
     exheader_file = exheader.open("rb")
     exheader_file.seek(0x10, os.SEEK_SET)
@@ -24,28 +25,44 @@ def split(code_bin: Path, exheader: Path, split: Split, symbols: dict[int, tuple
     md.detail = True
     md.skipdata = True
 
-    for (section, (start, end)) in split.sections.items():
+    for split_symbol_addr in split.symbols:
+        mappings: dict[int, str] = {}
+
+        def add_mapping(offset: int, type: str):
+            if offset not in mappings or mappings[offset] != "$a":
+                mappings[offset] = type
+
+        symbol = symbols[split_symbol_addr]
+        elf_symbol = symbol.elf_symbol
+        start = split_symbol_addr
+        end = start + elf_symbol.st_size
+        section = symbol.section if symbol.section != ".text" else "i." + elf_symbol.name
+
+        symbol.elf_symbol.st_shndx = section_idx
+
+        add_mapping(0, symbol.mapping)
+        elf_symbol_table.syms.append(symbol.elf_symbol)
+
         in_code = True
         current_func = start
-        next_func = current_func + symbols[start][0].st_size
+        next_func = current_func + elf_symbol.st_size
 
-        if section == ".text":
-            elf_relocs = ElfRelaSec('.rela.text')
+        if symbol.section == ".text":
+            elf_relocs = ElfRelaSec(f'.rela.{section}')
             elf_relocs.header.sh_info = section_idx
             elf_relocs.header.sh_link = 1
 
         code_bin_file.seek(start - base_address, os.SEEK_SET)
         split_bytes = code_bin_file.read(end - start)
         elf_section = ElfSection(section, split_bytes)
-
-        def add_mapping(offset: int, type: str):
-            mapping_symbol = ElfSymbol(type, offset, 0, st_shndx=section_idx)
-            elf_symbol_table.add_symbol(mapping_symbol)
+        h_type, h_flags = SpecialSections.get(symbol.section)
+        elf_section.header.sh_type = h_type
+        elf_section.header.sh_flags = h_flags
         
-        if section == ".text":
+        if symbol.section == ".text":
             def add_relocation(offset: int, addend: int, target: int, is_absolute: bool) -> None:
-                name = symbols[target][0].name
-                elf_symbol = ElfSymbol(name) # 00105444
+                name = symbols[target].elf_symbol.name
+                elf_symbol = ElfSymbol(name)
 
                 symbol_idx = elf_symbol_table.add_symbol(elf_symbol)
 
@@ -63,18 +80,6 @@ def split(code_bin: Path, exheader: Path, split: Split, symbols: dict[int, tuple
 
                 if insn.id == 0: # data
                     continue
-
-                if insn.address in symbols.keys():
-                    current_func = insn.address
-                    next_func = current_func + symbols[start][0].st_size
-                    in_code = True
-
-                    symbol, mapping = symbols[insn.address]
-
-                    symbol.st_shndx = section_idx
-
-                    add_mapping(insn.address - start, mapping)
-                    elf_symbol_table.syms.append(symbol)
                 
                 if insn.group(capstone.arm.ARM_GRP_JUMP) and not (insn.mnemonic == "bl" or insn.mnemonic == "blx"):
                     operand = insn.operands[0]
@@ -88,13 +93,19 @@ def split(code_bin: Path, exheader: Path, split: Split, symbols: dict[int, tuple
                         if operand.imm < current_func or operand.imm > next_func:
                             pass
                         else:
-                            add_mapping(operand.imm - start, "$a")
-
+                            add_mapping(operand.imm - start, symbol.mapping)
+        
+        current_mapping = None
+        for offset, mapping in mappings.items():
+            if current_mapping != mapping:
+                current_mapping = mapping
+                mapping_symbol = ElfSymbol(mapping, offset, 0, st_shndx=section_idx)
+                elf_symbol_table.add_symbol(mapping_symbol)
         
         elf.add_section(elf_section)
         section_idx += 1
 
-        if section == ".text":
+        if symbol.section == ".text":
             elf.add_section(elf_relocs)
             section_idx += 1
 

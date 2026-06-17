@@ -16,7 +16,8 @@ Matching = True
 default_cflags = [
     "-O3",
     "-Ospace",
-    "--cpu=MPCore"
+    "--cpu=MPCore",
+    "--split-sections",
 ]
 
 libs = [

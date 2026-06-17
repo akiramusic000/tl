@@ -4,16 +4,24 @@
 from pathlib import Path
 from pipeline.elf import ElfSymbol
 from pipeline.elfconsts import STB
+from dataclasses import dataclass
 
-def format_symbols(symbol_file: Path) -> dict[int, tuple[ElfSymbol, str]]:
-    syms: list[tuple[int, ElfSymbol]] = []
-    sym_dict: dict[int, tuple[ElfSymbol, str]] = {}
+@dataclass
+class Symbol:
+    elf_symbol: ElfSymbol
+    mapping: str
+    section: str
+
+def format_symbols(symbol_file: Path) -> dict[int, Symbol]:
+    syms: list[tuple[int, Symbol]] = []
+    sym_dict: dict[int, Symbol] = {}
 
     orig = symbol_file.read_text()
     for line in orig.splitlines():
         if line.strip():
             sym_addr, attrs = line.split("//")
-            sym, addr = sym_addr.split('=')
+            sym, section_addr = sym_addr.split('=')
+            section, addr = section_addr.strip().strip(";").split(":")
             if sym in syms:
                 print('Warning: symbol', sym, 'defined multiple times in', symbol_file.name, end='!\n')
             symbol = ElfSymbol(sym)
@@ -37,20 +45,21 @@ def format_symbols(symbol_file: Path) -> dict[int, tuple[ElfSymbol, str]]:
                     case "type":
                         mapping = value
 
-            syms.append((int(addr, 16), symbol))
-            sym_dict[int(addr, 16)] = (symbol, mapping)
+            syms.append((int(addr, 16), Symbol(symbol, mapping, section)))
+            sym_dict[int(addr, 16)] = Symbol(symbol, mapping, section)
 
     syms.sort(key=lambda val: val[0])
     lines = []
-    for (addr, sym) in syms:
-        match sym.st_info_bind:
+    for (addr, symbol) in syms:
+        elf_symbol = symbol.elf_symbol
+        match elf_symbol.st_info_bind:
             case STB.STB_GLOBAL:
                 scope = "global"
             case STB.STB_LOCAL:
                 scope = "local"
             case STB.STB_WEAK:
                 scope = "weak"
-        lines.append(f'{sym.name}={hex(addr)} // size:{hex(sym.st_size)} scope:{scope}')
+        lines.append(f'{elf_symbol.name}={symbol.section}:{hex(addr)}; // size:{hex(elf_symbol.st_size)} scope:{scope} mapping:{symbol.mapping}')
     formatted = '\n'.join(lines)
 
     if orig != formatted:

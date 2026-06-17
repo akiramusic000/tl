@@ -1,5 +1,3 @@
-nnSDK/crt0.cpp:
-    .text       start:0x00100000 end:0x00100048
+nnSDK/crt0.cpp: [0x100000, 0x100024]
 
-main.cpp:
-    .text       start:0x00103cf8 end:0x00105e88
+main.cpp: [0x103cf8]
